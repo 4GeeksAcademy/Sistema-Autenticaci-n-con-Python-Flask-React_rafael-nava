@@ -14,21 +14,41 @@ def setup_commands(app):
     by typing: $ flask insert-test-users 5
     Note: 5 is the number of users to add
     """
-    @app.cli.command("insert-test-users") # name of our command
-    @click.argument("count") # argument of out command
-    def insert_test_users(count):
+    # @app.cli.command("insert-test-users") # name of our command
+    # @click.argument("count") # argument of out command
+    # def insert_test_users(count):
+    #     print("Creating test users")
+    #     for x in range(1, int(count) + 1):
+    #         user = User()
+    #         user.name = "rafa"+ str(x)
+    #         user.last_name = "nava"+ str(x)
+    #         user.username = "rafa78"+ str(x)
+    #         user.email = "test_user" + str(x) + "@test.com"
+    #         user.password = "123456"
+    #         user.is_active = True
+    #         db.session.add(user)
+    #         db.session.commit()
+    #         print("User: ", user.email, " created.")
+
+    #     print("All test users created")
+
+
+    @app.cli.command("insert-test-data")
+    def insert_test_data():
+        count = input("Enter the number of test users to create: ")  # Solicitar al usuario que ingrese el número de usuarios de prueba a crear
         print("Creating test users")
         for x in range(1, int(count) + 1):
             user = User()
+            user.name = "user" + str(x)
+            user.last_name = "prueba" + str(x)
+            user.username = "userprueba" + str(x)
             user.email = "test_user" + str(x) + "@test.com"
             user.password = "123456"
             user.is_active = True
             db.session.add(user)
             db.session.commit()
-            print("User: ", user.email, " created.")
+            print("User:", user.username, "created.")
 
         print("All test users created")
 
-    @app.cli.command("insert-test-data")
-    def insert_test_data():
-        pass
+

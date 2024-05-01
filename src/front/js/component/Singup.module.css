@@ -1,0 +1,78 @@
+.registrationForm {
+  max-width: 500px;
+  margin: 40px auto;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.registrationForm h2 {
+  margin-top: 0;
+}
+
+label {
+  display: block;
+  margin-bottom: 10px;
+}
+
+input[type="email"],
+input[type="text"],
+input[type="password"] {
+  width: 100%;
+  height: 30px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.divButtons {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-start;
+
+}
+
+.submitButtonSingup {
+  width: 20%;
+  height: 30px;
+  padding: 10px;
+  margin: 2px;
+  border: none;
+  border-radius: 5px;
+  background-color: rgba(0, 128, 0, 0.668);
+  color: #fff;
+  cursor: pointer;
+  transition-duration: 0.4s;
+
+  display: flex; /* Utiliza flexbox para alinear el contenido */
+  justify-content: center; /* Centra horizontalmente */
+  align-items: center; /* Centra verticalmente */
+}
+
+.submitButtonSingup:hover {
+  background-color: rgba(0, 128, 0, 0.779);
+  color: white;
+}
+
+.cancelButton {
+  width: 90%;
+  height: 30px;
+  padding: 10px;
+  margin: 2px;
+
+  border: none;
+  border-radius: 5px;
+  background-color: rgba(92, 92, 92, 0.536);
+  color: #fff;
+  cursor: pointer;
+  transition-duration: 0.4s;
+  display: flex; /* Utiliza flexbox para alinear el contenido */
+  justify-content: center; /* Centra horizontalmente */
+  align-items: center; /* Centra verticalmente */
+}
+
+.cancelButton:hover {
+  background-color: red;
+  color: white;
+}
