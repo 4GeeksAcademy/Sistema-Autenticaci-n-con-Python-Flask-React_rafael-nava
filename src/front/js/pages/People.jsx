@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useContext } from "react";
+import styles from "./peoples.module.css";
 import { Link } from "react-router-dom";
 import { Context } from "../store/appContext";
-import "../../styles/demo.css";
 
 
-
-export const Demo = () => {
-	const { store, actions } = useContext(Context);
+const Peoples = () => {
+    const { store, actions } = useContext(Context);
 
 	useEffect(() => {
         // Cargar datos para las categorías principales al montar el componente
@@ -29,3 +28,5 @@ export const Demo = () => {
         </div>
     );
 };
+
+export default Peoples;

@@ -1,0 +1,158 @@
+/* Estilos para la carta */
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.text-end {
+
+    font-family: "Star Jedi", sans-serif;
+    font-weight: 800;
+    font-size: 45px;
+    letter-spacing: -2px;
+    text-align: center;
+    color: white;
+    margin: 0%;
+}
+
+.col-12 {
+margin-top: 50px;
+
+}
+
+.btn-light {
+    margin: 3px;
+    font-family: "Star Jedi", sans-serif;
+    font-weight: 800;
+    font-size: 15px;
+    letter-spacing: -1px;
+    text-align: center;
+    color: #797979;
+}
+
+
+/* Estilos para la carta */
+.cardDemo {
+    width: 15%;
+    border-radius: 10px; /* Borde redondeado */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra */
+    transition: transform 0.3s ease; /* Transición al hacer clic */
+    margin: 20px;
+    padding: 0%;
+    text-align: center;
+    background: white;
+    padding: 1px;
+    
+}
+
+.card-titleDemo {
+
+    font-family: "Star Jedi", sans-serif;
+    font-weight: 800;
+    font-size: 20px;
+    letter-spacing: -2px;
+    text-align: center;
+    color: #797979;
+    margin: 0%;
+}
+
+/* Estilos para la imagen dentro de la carta */
+.cardDemo img {
+
+    height: 150px;
+    border-radius: 10px;
+}
+
+
+.card-bodyDemo {
+    padding: 0%;
+}
+
+
+/* Estilos al pasar el mouse sobre la carta */
+.cardDemo:hover {
+    transform: translateY(-5px); /* Eleva la carta cuando se pasa el mouse */
+}
+
+/* Estilos al hacer clic en la carta */
+.cardDemo:active {
+    transform: translateY(2px); /* Efecto de hundimiento al hacer clic */
+}
+
+
+
+
+
+/* Estilos para la carta */
+.cardDemo {
+    width: 15%;
+    border-radius: 10px; /* Borde redondeado */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra */
+    transition: transform 0.3s ease; /* Transición al hacer clic */
+    margin: 20px;
+    padding: 0%;
+    text-align: center;
+    background: white;
+    padding: 1px;
+    
+}
+
+.card-titleDemoFilms {
+
+    font-family: "Star Jedi", sans-serif;
+    font-weight: 800;
+    font-size: 20px;
+    letter-spacing: -2px;
+    text-align: center;
+    color: #797979;
+    margin: 0%;
+}
+
+
+
+.cardDemoFilms {
+    width: 20%;
+    border-radius: 10px; /* Borde redondeado */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra */
+    transition: transform 0.3s ease; /* Transición al hacer clic */
+    margin: 20px;
+    padding: 0%;
+    text-align: center;
+    background: white;
+    padding: 1px;
+    
+}
+
+.card-textDemoFilms {
+    font-family: "Star Jedi", sans-serif;
+    font-weight: 800;
+    font-size: 10px;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    color: #9e9e9e;
+}
+
+/* Estilos para la imagen dentro de la carta */
+.cardDemoFilms img {
+
+    height: 150px;
+    border-radius: 10px;
+}
+
+
+.card-bodyDemoFilms {
+    padding: 0%;
+}
+
+
+/* Estilos al pasar el mouse sobre la carta */
+.cardDemoFilms:hover {
+    transform: translateY(-5px); /* Eleva la carta cuando se pasa el mouse */
+}
+
+/* Estilos al hacer clic en la carta */
+.cardDemoFilms:active {
+    transform: translateY(2px); /* Efecto de hundimiento al hacer clic */
+}

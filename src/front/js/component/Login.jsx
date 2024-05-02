@@ -17,7 +17,7 @@ const Login = () => {
               Contraseña:
               <input type="password" required/>
             </label>
-            <button type="submit" className={styles.submitButtonLogin}>Iniciar sesión</button>
+            <button type="submit" className={styles.submitButtonLogin}><Link to="/Demo">Iniciar sesión</Link></button>
             <a href="#">¿Olvidaste la contraseña?</a>
             <div className="rememberMe">
               <input type="checkbox" />

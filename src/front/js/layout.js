@@ -14,6 +14,10 @@ import { Footer } from "./component/footer";
 import Navbar from "./component/Navbar.jsx";
 import Login  from "./component/Login.jsx";
 import Singup from "./component/Singup.jsx";
+import People  from "./pages/People.jsx";
+import Character  from "./pages/Character.jsx";
+
+
 
 
 
