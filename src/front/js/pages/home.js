@@ -10,7 +10,7 @@ export const Home = () => {
 		<div className="text-center mt-5">
 			<h1>Estamos trabajando....</h1>
 			<p>
-				<img src="https://grupoenergiaperu.com/wp-content/uploads/2021/06/Perfil-web-en-construccion-400x400.png" />
+			<img src="https://i.pinimg.com/originals/32/d8/24/32d824c66045b518f537ce7bb6b6013d.gif" alt="Estamos trabajando" />			
 			</p>
 			<div className="alert alert-info">
 				{store.message || "Loading message from the backend (make sure your python backend is running)..."}

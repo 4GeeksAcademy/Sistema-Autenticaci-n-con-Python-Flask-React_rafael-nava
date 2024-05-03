@@ -28,3 +28,16 @@
   .loginButton:hover {
     background-color: #f50a15;
   }
+
+  .logoutButton {
+    background-color: #e50914;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+  
+  .logoutButton:hover {
+    background-color: #f50a15;
+  }

@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useContext } from "react";
-import styles from "./Singup.module.css";
 import { Link } from "react-router-dom";
 import { Context } from "../store/appContext"; // Importar el contexto desde '../store/appContext'
 import { useStore } from "../store/appContext";
+import styles from "./Singup.module.css";
+
 
 
 const Signup = () => {

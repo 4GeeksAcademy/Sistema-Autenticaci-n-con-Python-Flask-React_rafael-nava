@@ -1,6 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
+import styles from "../pages/peoples.module.css"
 // import { useNavigate } from "react-router";
 
 const getState = ({ getStore, getActions, setStore }) => {
@@ -15,7 +17,10 @@ const getState = ({ getStore, getActions, setStore }) => {
       },
 
       creationState: [],
+      loginState:[],
       people: [],
+      loginUser: {email: "", password: "" },
+      login_true_o_false: false
     },
     
     actions: {
@@ -43,6 +48,56 @@ const getState = ({ getStore, getActions, setStore }) => {
           dataUser: { ...store.dataUser, [e.target.name]: e.target.value },
         });
         console.log(store);
+      },
+
+      handleChangeLogin: (e) => {
+        // Obtener el estado actualizado del almacén
+        const store = getStore();
+
+        // Agregar el detalle de los datos del usuario actualizado
+        setStore({
+          ...store,
+          loginUser: { ...store.loginUser, [e.target.name]: e.target.value },
+        });
+        // console.log(store);
+      },
+
+      handleLogin: async () => {
+        const store = getStore();
+        const { loginUser, } = store; // Obtener los datos del usuario del estado
+        const { email, password } = loginUser;
+
+        if (
+          email.trim() === "" || password.trim() === ""){
+          console.error("Por favor completa todos los campos.");
+          return; // Detener el envío del formulario si algún campo está vacío
+        }
+
+        try {
+          let response = await fetch(
+            "https://glowing-orbit-9775rxwgrxgjh6pj-3001.app.github.dev/api/token",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(loginUser),
+            }
+          );
+
+          let data = await response.json();
+          setStore({ ...store, login_true_o_false: data.password });
+          setStore({ ...store, loginState: data });
+          // console.log(store)
+          // console.log(data); // Puedes hacer algo con la respuesta del servidor si es necesario
+          // Ocultar la respuesta después de 2 segundos
+          setTimeout(() => {
+            setStore({ ...getStore(), loginState: [] });
+          }, 3000);
+
+        } catch (error) {
+          throw new Error(`Error login: ${error.message}`);
+        }
       },
 
       handleSubmit: async (e) => {
@@ -107,9 +162,9 @@ const getState = ({ getStore, getActions, setStore }) => {
           // Ocultar la respuesta después de 2 segundos
           setTimeout(() => {
             setStore({ ...getStore(), creationState: [] });
-          }, 2000);
+          }, 3000);
 
-          console.log(data); // Puedes hacer algo con la respuesta del servidor si es necesario
+          // console.log(data); // Puedes hacer algo con la respuesta del servidor si es necesario
         } catch (error) {
           throw new Error(`Error adding user: ${error.message}`);
         }
@@ -149,33 +204,43 @@ const getState = ({ getStore, getActions, setStore }) => {
 
         // Mapeamos los resultados y creamos las tarjetas correspondientes
         return people.map((item, index) => (
-          <div
-            className="cardDemo"
-          >
-            <Link to={"/Single/" + index}>
+          <div className={styles["cardDemo"]} key={index}>
+            <Link to={"/Character/" + index}>
               <img
                 src={`https://starwars-visualguide.com/assets/img/characters/${item.id}.jpg`}
-                // La URL de la imagen se construye dinámicamente.
-                // Si la categoría es 'people', se usa 'characters' en lugar de 'people' en la URL.
-                // De lo contrario, se usa la categoría actual.
-                className="card-img-top"
+                className={styles["card-img-top"]}
                 alt={`Image for ${item.name}`}
-                // Texto alternativo para la imagen que incluye el nombre del item.
                 onError={(e) => {
-                  // Si hay un error al cargar la imagen, se reemplaza por una imagen de placeholder.
-                  e.target.src =
-                    "https://starwars-visualguide.com/assets/img/placeholder.jpg";
+                  e.target.src = "https://starwars-visualguide.com/assets/img/placeholder.jpg";
                 }}
-              /></Link>
-            <div className="card-bodyDemo">
-              <h5 className="card-titleDemo">
-                <Link to={"/Single/" + index}>{item.name || "Título no disponible"}</Link>
+              />
+            </Link>
+            <div className={styles["card-bodyDemo"]}>
+              <h5 className={styles["card-titleDemo"]}>
+                <Link to={"/Character/" + index}>{item.name || "Título no disponible"}</Link>
               </h5>
             </div>
           </div>
         ));
       },
 
+      closeSession: () => {
+        const store = getStore();
+        const { loginUser, login_true_o_false, dataUser } = store; // Obtener dataUser del estado global
+
+        // Verificar si el usuario ha iniciado sesión
+        if (login_true_o_false) {
+          // Eliminar la información de inicio de sesión del almacenamiento local
+          setStore({ ...getStore(),
+          people: [],
+          loginUser: { email: "", password: "" }, 
+          login_true_o_false: false, 
+          dataUser: { email: "",name: "",last_name: "",username: "", password: "",}});
+          console.log(store);
+
+        }
+      },
+      
     },
   };
 };

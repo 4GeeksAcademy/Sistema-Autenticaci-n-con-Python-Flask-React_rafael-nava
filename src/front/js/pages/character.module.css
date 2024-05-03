@@ -1,12 +1,9 @@
-.col-4 img{
-    height: 20rem;
-    width: 10rem;
-}
 
 
 /* Estilos para la carta */
 .cardSingle {
     width: 27%;
+    height: fit-content;
     border-radius: 10px; /* Borde redondeado */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra */
     transition: transform 0.3s ease; /* Transición al hacer clic */
