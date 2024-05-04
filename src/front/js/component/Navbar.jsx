@@ -11,9 +11,12 @@ const Navbar = () => {
   const navigate = useNavigate(); // Obtener la función navigate de react-router-dom
 
   const handleCloseSession = async () => {
-    await actions.closeSession()
+    await actions.closeSession();
+    localStorage.removeItem("token"); // Elimina el token del localStorage
     navigate("/");
-    }
+    window.location.reload(); // Recarga la página
+};
+
 
 
   return (

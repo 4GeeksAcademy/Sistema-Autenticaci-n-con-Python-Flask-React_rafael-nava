@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 
 const Login = () => {
-  const { store, actions } = useContext(Context); // Obtener el estado global (store) y las acciones desde el contexto
+  const { store, actions, getStore} = useContext(Context); // Obtener el estado global (store) y las acciones desde el contexto
   const { loginUser, loginState} = store; // Obtener dataUser del estado global
 
 
@@ -16,32 +16,40 @@ const Login = () => {
   const callHandleLogin = async (e) => {
     e.preventDefault(); // Previene el comportamiento por defecto del formulario
 
-      await actions.handleLogin();
-      const { login_true_o_false } = store;
-      if (login_true_o_false === true) {
-         navigate("/People");
-      } 
-    };
+    try {
+        await actions.handleLogin();
+        const { login_true_o_false } = store; // Accede a login_true_o_false directamente desde store
+        // console.log('Login successful:', login_true_o_false);
+        await actions.loadDataStartWars();
+        // console.log('Data loaded');
+        
+        if (login_true_o_false){
+            // console.log('Navigating to /People');
+            navigate("/People");
+        }
+
+    } catch (error) {
+        console.error('Error:', error);
+        // Manejar el error de alguna manera, por ejemplo, mostrando un mensaje al usuario
+    }
+};
 
     const renderLoginResponse = () => {
+      const { loginState } = store; // Accede a login_true_o_false directamente desde store
       if (loginState.length > 0) {
-        return (
-          <div>
-            {loginState.map((data, index) => (
-              <div key={index}>
-                {data.error ? (
-                  <div class="alert alert-danger" role="alert">
-                  <p>{data.error}</p>
-                </div>
-                ) : (
-                  <div class="alert alert-success" role="alert">
-                    <p>{data.password}</p>
-                  </div>    
-                )}
-              </div>
-            ))}
-          </div>
-        );
+        if (loginState[0].error) {
+          return (
+            <div class="alert alert-danger" role="alert">
+              <p>{loginState[0].error}</p>
+            </div>
+          );
+        } else {
+          return (
+            <div class="alert alert-success" role="alert">
+              <p>Correct password</p>
+            </div>
+          );
+        }
       }
     };
 
@@ -52,7 +60,7 @@ const Login = () => {
           <div>
             {renderLoginResponse()}
           </div>
-          <form>
+          <form onSubmit={callHandleLogin}>
             <label>
               Email:
               <input type="email" name="email" value={loginUser.email.trim()} onChange={actions.handleChangeLogin} required/>
@@ -61,7 +69,7 @@ const Login = () => {
               Contraseña:
               <input type="password" name="password" value={loginUser.password} onChange={actions.handleChangeLogin} required/>
             </label>
-            <button type="submit" className={styles.submitButtonLogin} onClick={callHandleLogin}>Iniciar sesión</button>
+            <button type="submit" className={styles.submitButtonLogin}>Iniciar sesión</button>
             <a href="#">¿Olvidaste la contraseña?</a>
             <div className="rememberMe">
               <input type="checkbox" />

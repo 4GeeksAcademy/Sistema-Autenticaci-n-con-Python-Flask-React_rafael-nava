@@ -5,8 +5,8 @@ from flask import Flask, request, jsonify, url_for, Blueprint
 from api.models import db, User, Character
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
-# from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt
-# from flask_bcrypt import Bcrypt
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
+from flask_bcrypt import generate_password_hash, check_password_hash
 from datetime import timedelta
 
 api = Blueprint('api', __name__)
@@ -15,9 +15,8 @@ api = Blueprint('api', __name__)
 CORS(api)
 
 #-------ENCRIPTACION JWT------
-# api.config["JWT_SECRET_KEY"] = "Valor-variable"
-# jwt = JWTManager(api)
-# bcrypt = Bcrypt(api)
+#la inicialización de JWTManager está en la carpeta app.py despues de la declaración del servidor Flask
+jwt = JWTManager()
 
 #-------------------CONSULTAR TODOS LOS USUARIOS--------------------------------------------------------------------------
 @api.route('/users', methods=['GET'])
@@ -57,14 +56,14 @@ def create_new_user():  # Define la función que manejará la solicitud
         if existing_username:  # Verifica si ya existe un usuario con el mismo username
             return jsonify({'error': 'Username already exists.'}), 409  # Devuelve un error con código de estado 409 si ya existe un usuario con el mismo username
 
-        # PARA CREAR LA CONTRASEÑA password_hash = bcryt.generate_password_hash(password).decode('utf-8')
+        password_hash = generate_password_hash(data['password']).decode('utf-8')
 
-        new_user = User(email=data['email'], password=data['password'], name=data.get('name'), last_name=data.get('last_name'), username=data.get('username'), is_active=True)  # Crea un nuevo usuario con los datos proporcionados
+        new_user = User(email=data['email'], password=password_hash, username=data['username'], name=data.get('name'), last_name=data.get('last_name'), is_active=True)  # Crea un nuevo usuario con los datos proporcionados
 
         db.session.add(new_user)  # Agrega el nuevo usuario a la sesión de la base de datos
         db.session.commit()  # Confirma los cambios en la base de datos
  
-        return jsonify({'message': 'User '+new_user.username+' created successfully'}), 201  # Devuelve un mensaje de éxito con el ID del nuevo usuario y un código de estado 201
+        return jsonify({'message': 'User created successfully'}), 201  # Devuelve un mensaje de éxito con el ID del nuevo usuario y un código de estado 201
    
     except Exception as e:  # Captura cualquier excepción que ocurra dentro del bloque try
         return jsonify({'error': 'Error in user creation: ' + str(e)}), 500  # Devuelve un mensaje de error con un código de estado HTTP 500 si ocurre una excepción durante el procesamiento
@@ -88,22 +87,25 @@ def create_token():  # Define la función que manejará la solicitud
         if not existing_user:  # Verifica si ya existe un usuario con el mismo email
             return jsonify({'error': 'Email does not exist.'}), 400  # Devuelve un error con código de estado 409 si ya existe un usuario con el mismo email
 
-        # password_user_db = existing_user.password #Si el usuario existe extraemos el password de la base de datos
-        # true_o_false = bcrypt.check_password_hash(password_user_db, data['password']) #comparamos password ingresada en el formulario vs la password desencritada de la db
-        # if true_o_false:
-        #     expires = timedelta(days=1)
-        #     user_id = existing_user.id
-        #     access_token = create_access_token(identy=user_id, expires_delta=expires)
-        #     return jsonify({'access_token': access_token}), 200
-        # else:
-        #     return jsonify({'error': 'Password incorret'}), 400
+        password_user_db = existing_user.password  # Extraemos la contraseña almacenada del usuario existente en la base de datos
 
-    #----------------token de juguete-----------------------------------------------        
-        existing_password = User.query.filter_by(password=data['password']).first()  # Busca un usuario en la base de datos con el mismo username
-        if existing_password:  # Verifica si ya existe un usuario con el mismo username
-            return jsonify({'password': True}), 200  # Devuelve un error con código de estado 409 si ya existe un usuario con el mismo username
-        else:
-            return jsonify({'password': False}), 400
+        true_o_false = check_password_hash(password_user_db, data['password'])  # Comparamos la contraseña ingresada en el formulario con la contraseña almacenada en la base de datos, después de descifrarla
+
+        if true_o_false:  # Si la comparación es verdadera, es decir, las contraseñas coinciden
+            expires = timedelta(days=1)  # Configuramos la duración del token de acceso
+            user_id = existing_user.id  # Obtenemos el ID del usuario existente en la base de datos
+            access_token = create_access_token(identity=user_id, expires_delta=expires)  # Creamos un token de acceso para el usuario
+            return jsonify({'access_token': access_token, 'login': True}), 200  # Devolvemos el token de acceso como respuesta exitosa
+        else:  # Si la comparación de contraseñas es falsa, es decir, las contraseñas no coinciden
+            return jsonify({'error': 'Incorrect password'}), 400  # Devolvemos un mensaje de error indicando que la contraseña es incorrecta
+
+
+    # #----------------token de juguete-----------------------------------------------        
+    #     existing_password = User.query.filter_by(password=data['password']).first()  # Busca un usuario en la base de datos con el mismo username
+    #     if existing_password:  # Verifica si ya existe un usuario con el mismo username
+    #         return jsonify({'password': True}), 200  # Devuelve un error con código de estado 409 si ya existe un usuario con el mismo username
+    #     else:
+    #         return jsonify({'password': False}), 400
         
     except Exception as e:  # Captura cualquier excepción que ocurra dentro del bloque try
         return jsonify({'error': 'Error login user: ' + str(e)}), 500  # Devuelve un mensaje de error con un código de estado HTTP 500 si ocurre una excepción durante el procesamiento
@@ -112,16 +114,16 @@ def create_token():  # Define la función que manejará la solicitud
 
 
 #-------------------RESTRICCION POR TOKEN  USUARIOS--------------------------------------------------------------------------
-# @api.route('/people', methods=['GET'])
-# @jwt_required() # Decorador para requerir autenticación con JWT
-# def show_users():
-#     current_user_id = get_jwt_identity() # Obtiene la id del usuario del token
-#     if current_user_id:
-#         characters = Character.query.all()
-#         serialized_characters = [character.serialize() for character in characters]
-#         return jsonify(serialized_characters)
-#     else:
-#         return {"Error": "Token inválido"},401
+@api.route('/people', methods=['GET'])
+@jwt_required() # Decorador para requerir autenticación con JWT
+def show_people():
+    current_user_id = get_jwt_identity() # Obtiene la id del usuario del token
+    if current_user_id:
+        characters = Character.query.all()
+        serialized_characters = [character.serialize() for character in characters]
+        return jsonify(serialized_characters), 200
+    else:
+        return {"Error": "Token inválido"}, 401
 
 #-----------------------------------------------------------METODOS PARA CHARACTERS-------------------------------------------------------------
 

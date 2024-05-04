@@ -11,7 +11,6 @@ const Character = (props) => {
   return (
       <div className="d-flex justify-content-center"> 
         <div className={styles1["cardSingle"]}>
-          {/* // se llama a la funcion para extraer imagen y se pasa como argumento itemDetail */}
           <img
             src={`https://starwars-visualguide.com/assets/img/characters/${
               store.people[params.theid].id

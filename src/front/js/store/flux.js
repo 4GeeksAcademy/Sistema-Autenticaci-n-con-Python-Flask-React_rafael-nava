@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
-import styles from "../pages/peoples.module.css"
+import styles from "../pages/peoples.module.css";
 // import { useNavigate } from "react-router";
 
 const getState = ({ getStore, getActions, setStore }) => {
@@ -17,18 +17,17 @@ const getState = ({ getStore, getActions, setStore }) => {
       },
 
       creationState: [],
-      loginState:[],
+      loginState: [],
       people: [],
-      loginUser: {email: "", password: "" },
-      login_true_o_false: false
+      loginUser: { email: "", password: "" },
+      login_true_o_false: false,
     },
-    
-    actions: {
 
+    actions: {
       getMessage: async () => {
         try {
           // fetching data from the backend
-          const resp = await fetch(process.env.BACKEND_URL + "/api/hello");
+          // const resp = await fetch(process.env.BACKEND_URL + "/api/hello");
           const data = await resp.json();
           setStore({ message: data.message });
           // don't forget to return something, that is how the async resolves
@@ -38,7 +37,7 @@ const getState = ({ getStore, getActions, setStore }) => {
         }
       },
 
-      handleChange: (e) => {
+      handleChangeInput: (e) => {
         // Obtener el estado actualizado del almacén
         const store = getStore();
 
@@ -50,57 +49,7 @@ const getState = ({ getStore, getActions, setStore }) => {
         console.log(store);
       },
 
-      handleChangeLogin: (e) => {
-        // Obtener el estado actualizado del almacén
-        const store = getStore();
-
-        // Agregar el detalle de los datos del usuario actualizado
-        setStore({
-          ...store,
-          loginUser: { ...store.loginUser, [e.target.name]: e.target.value },
-        });
-        // console.log(store);
-      },
-
-      handleLogin: async () => {
-        const store = getStore();
-        const { loginUser, } = store; // Obtener los datos del usuario del estado
-        const { email, password } = loginUser;
-
-        if (
-          email.trim() === "" || password.trim() === ""){
-          console.error("Por favor completa todos los campos.");
-          return; // Detener el envío del formulario si algún campo está vacío
-        }
-
-        try {
-          let response = await fetch(
-            "https://glowing-orbit-9775rxwgrxgjh6pj-3001.app.github.dev/api/token",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(loginUser),
-            }
-          );
-
-          let data = await response.json();
-          setStore({ ...store, login_true_o_false: data.password });
-          setStore({ ...store, loginState: data });
-          // console.log(store)
-          // console.log(data); // Puedes hacer algo con la respuesta del servidor si es necesario
-          // Ocultar la respuesta después de 2 segundos
-          setTimeout(() => {
-            setStore({ ...getStore(), loginState: [] });
-          }, 3000);
-
-        } catch (error) {
-          throw new Error(`Error login: ${error.message}`);
-        }
-      },
-
-      handleSubmit: async (e) => {
+      buttonSubmit: async () => {
         const store = getStore();
         const { dataUser, creationState } = store; // Obtener los datos del usuario del estado
         const { email, name, last_name, username, password } = dataUser;
@@ -108,7 +57,7 @@ const getState = ({ getStore, getActions, setStore }) => {
         // Validación del email utilizando una expresión regular
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
-          console.error("Por favor ingresa un email válido.");
+          // console.error("Por favor ingresa un email válido.");
           return;
         }
 
@@ -131,7 +80,6 @@ const getState = ({ getStore, getActions, setStore }) => {
           return; // Detener el envío del formulario si algún campo está vacío
         }
 
-        e.preventDefault(); // Prevenir el comportamiento por defecto del formulario, que es enviar una solicitud HTTP
 
         try {
           let response = await fetch(
@@ -158,8 +106,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 
           let data = await response.json();
           setStore({ ...store, creationState: [...store.creationState, data] });
-
-          // Ocultar la respuesta después de 2 segundos
+          // console.log("creationState: ",store.creationState)
+          // Ocultar la respuesta después de 3 segundos
           setTimeout(() => {
             setStore({ ...getStore(), creationState: [] });
           }, 3000);
@@ -170,14 +118,72 @@ const getState = ({ getStore, getActions, setStore }) => {
         }
       },
 
+      handleChangeLogin: (e) => {
+        // Obtener el estado actualizado del almacén
+        const store = getStore();
+
+        // Agregar el detalle de los datos del usuario actualizado
+        setStore({
+          ...store,
+          loginUser: { ...store.loginUser, [e.target.name]: e.target.value },
+        });
+        // console.log(store);
+      },
+
+      handleLogin: async () => {
+        const store = getStore();
+        const { loginUser } = store; // Obtener los datos del usuario del estado
+        const { email, password } = loginUser;
+
+        if (email.trim() === "" || password.trim() === "") {
+          console.error("Por favor completa todos los campos.");
+          return; // Detener el envío del formulario si algún campo está vacío
+        }
+
+        try {
+          let response = await fetch(
+            "https://glowing-orbit-9775rxwgrxgjh6pj-3001.app.github.dev/api/token",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(loginUser),
+            }
+          );
+
+          let data = await response.json();
+          if(data.access_token){
+            localStorage.setItem("token", data.access_token);
+          }
+
+          setStore({ ...store, login_true_o_false: data.login });
+          setStore({ ...store, loginState: [...store.loginState, data] });
+          // console.log(store)
+
+          // Ocultar la respuesta después de 2 segundos
+          setTimeout(() => {
+            setStore({ ...getStore(), loginState: [] });
+          }, 3000);
+        } catch (error) {
+          throw new Error(`Error login: ${error.message}`);
+        }
+      },
+
       loadDataStartWars: async () => {
         try {
-          // Construimos la URL para la solicitud según la categoría proporcionada, si no se proporciona una URL específica
-          let url = `https://glowing-orbit-9775rxwgrxgjh6pj-3001.app.github.dev/api/characters`;
-
-          // Realizamos una solicitud a la URL construida usando fetch
-          let response = await fetch(url);
-
+          // Obtenemos el token del almacenamiento local
+          let myToken = localStorage.getItem("token");
+          // Construimos la URL para la solicitud
+          let url =
+            "https://glowing-orbit-9775rxwgrxgjh6pj-3001.app.github.dev/api/people";
+          // Realizamos una solicitud a la URL usando fetch, incluyendo el token de autorización en los encabezados
+          let response = await fetch(url, {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${myToken}`
+            },
+          });
           // Verificamos si la respuesta de la solicitud es exitosa (status code 200-299)
           if (!response.ok) {
             // Si la respuesta no es exitosa, lanzamos un error con un mensaje apropiado
@@ -191,7 +197,7 @@ const getState = ({ getStore, getActions, setStore }) => {
           let store = getStore();
           setStore({ ...store, people: data });
           // Imprimimos el estado de la tienda después de cargar los datos (solo para depuración)
-          console.log("Store after data loaded:", store);
+          // console.log("Store after data loaded:", store);
         } catch (error) {
           // Si ocurre algún error durante el proceso, lo capturamos y lo mostramos en la consola
           console.error(error.message);
@@ -211,13 +217,16 @@ const getState = ({ getStore, getActions, setStore }) => {
                 className={styles["card-img-top"]}
                 alt={`Image for ${item.name}`}
                 onError={(e) => {
-                  e.target.src = "https://starwars-visualguide.com/assets/img/placeholder.jpg";
+                  e.target.src =
+                    "https://starwars-visualguide.com/assets/img/placeholder.jpg";
                 }}
               />
             </Link>
             <div className={styles["card-bodyDemo"]}>
               <h5 className={styles["card-titleDemo"]}>
-                <Link to={"/Character/" + index}>{item.name || "Título no disponible"}</Link>
+                <Link to={"/Character/" + index}>
+                  {item.name || "Título no disponible"}
+                </Link>
               </h5>
             </div>
           </div>
@@ -229,18 +238,24 @@ const getState = ({ getStore, getActions, setStore }) => {
         const { loginUser, login_true_o_false, dataUser } = store; // Obtener dataUser del estado global
 
         // Verificar si el usuario ha iniciado sesión
-        if (login_true_o_false) {
+        if (login_true_o_false === 'Password correct') {
           // Eliminar la información de inicio de sesión del almacenamiento local
-          setStore({ ...getStore(),
-          people: [],
-          loginUser: { email: "", password: "" }, 
-          login_true_o_false: false, 
-          dataUser: { email: "",name: "",last_name: "",username: "", password: "",}});
+          setStore({
+            ...getStore(),
+            people: [],
+            loginUser: { email: "", password: "" },
+            login_true_o_false: false,
+            dataUser: {
+              email: "",
+              name: "",
+              last_name: "",
+              username: "",
+              password: "",
+            },
+          });
           console.log(store);
-
         }
       },
-      
     },
   };
 };
