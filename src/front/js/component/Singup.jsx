@@ -105,6 +105,46 @@ const Signup = () => {
             title="La contraseña debe tener al menos 8 caracteres alfanuméricos, una mayúscula y un carácter especial (#, @ o *)."
           />
         </label>
+        <label>
+          Pregunta de seguridad 1:
+          <input
+            type="text"
+            name="security_question_1"
+            value={dataUser.security_questions[0].question}
+            onChange={actions.handleChangeInput}
+            required
+          />
+        </label>
+        <label>
+          Respuesta de seguridad 1:
+          <input
+            type="text"
+            name="security_answer_1"
+            value={dataUser.security_questions[0].answer}
+            onChange={actions.handleChangeInput}
+            required
+          />
+        </label>
+        <label>
+          Pregunta de seguridad 2:
+          <input
+            type="text"
+            name="security_question_2"
+            value={dataUser.security_questions[1].question}
+            onChange={actions.handleChangeInput}
+            required
+          />
+        </label>
+        <label>
+          Respuesta de seguridad 2:
+          <input
+            type="text"
+            name="security_answer_2"
+            value={dataUser.security_questions[1].answer}
+            onChange={actions.handleChangeInput}
+            required
+          />
+        </label>
         <div className={styles.divButtons}>
           <button
             type="submit"
@@ -120,7 +160,7 @@ const Signup = () => {
         </div>
       </form>
     </div>
-  );
+  );  
 };
 
 export default Signup;

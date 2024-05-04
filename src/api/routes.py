@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Character
+from api.models import db, User, Character, SecurityQuestion
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
@@ -48,6 +48,10 @@ def create_new_user():  # Define la función que manejará la solicitud
         if 'password' not in data:  # Verifica si 'password' no está presente en los datos JSON
             return jsonify({'error': 'Password is required'}), 400  # Devuelve un error con código de estado 400 si 'password' no está presente
 
+        # Verifica si se proporcionan las preguntas y respuestas de seguridad en los datos JSON
+        if 'security_questions' not in data or len(data['security_questions']) != 2:
+            return jsonify({'error': 'Security questions and answers are required'}), 400
+
         existing_user = User.query.filter_by(email=data['email']).first()  # Busca un usuario en la base de datos con el mismo email
         if existing_user:  # Verifica si ya existe un usuario con el mismo email
             return jsonify({'error': 'Email already exists.'}), 409  # Devuelve un error con código de estado 409 si ya existe un usuario con el mismo email
@@ -58,7 +62,16 @@ def create_new_user():  # Define la función que manejará la solicitud
 
         password_hash = generate_password_hash(data['password']).decode('utf-8')
 
-        new_user = User(email=data['email'], password=password_hash, username=data['username'], name=data.get('name'), last_name=data.get('last_name'), is_active=True)  # Crea un nuevo usuario con los datos proporcionados
+        # Crea un nuevo usuario con los datos proporcionados
+        new_user = User(email=data['email'], password=password_hash, username=data['username'], name=data.get('name'), last_name=data.get('last_name'), is_active=True)
+       
+        # Agrega las preguntas y respuestas de seguridad al usuario
+        for question_answer in data['security_questions']:
+            new_question = SecurityQuestion(
+                question=question_answer['question'],
+                answer=question_answer['answer']
+            )
+            new_user.security_questions.append(new_question)
 
         db.session.add(new_user)  # Agrega el nuevo usuario a la sesión de la base de datos
         db.session.commit()  # Confirma los cambios en la base de datos

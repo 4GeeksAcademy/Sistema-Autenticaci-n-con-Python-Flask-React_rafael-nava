@@ -14,6 +14,10 @@ const getState = ({ getStore, getActions, setStore }) => {
         last_name: "",
         username: "",
         password: "",
+        security_questions: [
+          { question: "", answer: "" },
+          { question: "", answer: "" }
+        ]
       },
 
       creationState: [],
@@ -40,19 +44,63 @@ const getState = ({ getStore, getActions, setStore }) => {
       handleChangeInput: (e) => {
         // Obtener el estado actualizado del almacén
         const store = getStore();
-
-        // Agregar el detalle de los datos del usuario actualizado
-        setStore({
-          ...store,
-          dataUser: { ...store.dataUser, [e.target.name]: e.target.value },
-        });
+      
+        // Extraer el nombre y el valor del campo del evento
+        const { name, value } = e.target;
+      
+        // Verificar si el campo es una pregunta o respuesta de seguridad
+        if (name.startsWith("security_question_")) {
+          // Obtener el número de la pregunta de seguridad
+          const questionNumber = parseInt(name.charAt(name.length - 1));
+      
+          // Actualizar la pregunta de seguridad correspondiente en el estado
+          const updatedSecurityQuestions = [...store.dataUser.security_questions];
+          updatedSecurityQuestions[questionNumber - 1].question = value;
+      
+          // Actualizar el estado solo para las preguntas de seguridad
+          setStore({
+            ...store,
+            dataUser: {
+              ...store.dataUser,
+              security_questions: updatedSecurityQuestions
+            }
+          });
+        } else if (name.startsWith("security_answer_")) {
+          // Obtener el número de la respuesta de seguridad
+          const answerNumber = parseInt(name.charAt(name.length - 1));
+      
+          // Actualizar la respuesta de seguridad correspondiente en el estado
+          const updatedSecurityQuestions = [...store.dataUser.security_questions];
+          updatedSecurityQuestions[answerNumber - 1].answer = value;
+      
+          // Actualizar el estado solo para las respuestas de seguridad
+          setStore({
+            ...store,
+            dataUser: {
+              ...store.dataUser,
+              security_questions: updatedSecurityQuestions
+            }
+          });
+        } else {
+          // Si no es una pregunta o respuesta de seguridad, actualizar el estado como antes
+          setStore({
+            ...store,
+            dataUser: {
+              ...store.dataUser,
+              [name]: value
+            }
+          });
+        }
         console.log(store);
       },
+      
+
+      
 
       buttonSubmit: async () => {
         const store = getStore();
         const { dataUser, creationState } = store; // Obtener los datos del usuario del estado
-        const { email, name, last_name, username, password } = dataUser;
+        const { email, name, last_name, username, password, security_questions } = dataUser;
 
         // Validación del email utilizando una expresión regular
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -74,7 +122,9 @@ const getState = ({ getStore, getActions, setStore }) => {
           name.trim() === "" ||
           last_name.trim() === "" ||
           username.trim() === "" ||
-          dataUser.password.trim() === ""
+          dataUser.password.trim() === "" ||
+          security_questions.length !== 2 // Verifica que se proporcionen dos preguntas y respuestas de seguridad
+  
         ) {
           console.error("Por favor completa todos los campos.");
           return; // Detener el envío del formulario si algún campo está vacío
@@ -82,6 +132,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 
         try {
+          const userData = {
+            email, name,last_name, 
+            username, password, security_questions};
           let response = await fetch(
             "https://glowing-orbit-9775rxwgrxgjh6pj-3001.app.github.dev/api/users",
             {
@@ -89,10 +142,20 @@ const getState = ({ getStore, getActions, setStore }) => {
               headers: {
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify(dataUser),
+              body: JSON.stringify(userData),
             }
           );
           // Si la solicitud es exitosa, limpiar los datos del usuario
+          // setStore({
+          //   ...getStore(),
+          //   dataUser: {
+          //     email: "",
+          //     name: "",
+          //     last_name: "",
+          //     username: "",
+          //     password: "",
+          //   },
+          // });
           setStore({
             ...getStore(),
             dataUser: {
@@ -101,6 +164,10 @@ const getState = ({ getStore, getActions, setStore }) => {
               last_name: "",
               username: "",
               password: "",
+              security_questions: [
+                { question: "", answer: "" }, // Reiniciar las preguntas y respuestas de seguridad
+                { question: "", answer: "" }
+              ]
             },
           });
 

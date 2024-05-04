@@ -15,7 +15,7 @@ class User(db.Model):  # Definir una clase que hereda de la clase Model de SQLAl
     username = db.Column(db.String(80), unique=True, nullable=False)  # Definir una columna de tipo string con restricciones de unicidad y no nulidad
     name = db.Column(db.String(80), unique=False, nullable=False)  # Definir una columna de tipo string con restricciones de no nulidad
     last_name = db.Column(db.String(80), unique=False, nullable=False)  # Definir una columna de tipo string con restricciones de no nulidad
-
+    security_questions = db.relationship("SecurityQuestion", backref="user", lazy=True)
 
 
     # Método para representar un objeto de usuario como una cadena
@@ -29,10 +29,33 @@ class User(db.Model):  # Definir una clase que hereda de la clase Model de SQLAl
             "email": self.email,
             "username": self.username,
             "name": self.name, 
-            "last_name": self.last_name
+            "last_name": self.last_name,
+            "security_questions_question1": self.security_questions[0].question,
+            "security_questions_answer1": self.security_questions[0].answer,
+            "security_questions_question2": self.security_questions[1].question,
+            "security_questions_answer2": self.security_questions[1].answer
 
         }
     
+
+class SecurityQuestion(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    question = db.Column(db.String(255), nullable=False)
+    answer = db.Column(db.String(255), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+
+
+    # Método para representar un objeto de usuario como una cadena
+    def __repr__(self):  # Definir un método para representación de cadena
+        return '<SecurityQuestion %r>' % self.id  # Devolver una cadena que representa el objeto usuario
+
+    # Método para serializar un objeto de usuario a un diccionario JSON
+    def serialize(self):  # Definir un método para serializar el objeto usuario
+        return {  # Devolver un diccionario con los atributos del usuario
+            "id": self.id,
+            "question": self.question,
+            "answer": self.answer
+        }
 
 class Character(db.Model):
     # Definición de las columnas de la tabla de personajes
