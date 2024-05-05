@@ -25,6 +25,15 @@ const getState = ({ getStore, getActions, setStore }) => {
       people: [],
       loginUser: { email: "", password: "" },
       login_true_o_false: false,
+      loginHelpUser:{ email: "" },
+      loginHelpUserError:[],
+      loginHelpUser_true_o_false: false,
+      loginHelpState: false,
+      recoveredUserData: [],
+      UserPasswordUpdate:{ password: "" },
+      UserPasswordUpdateState: []
+
+
     },
 
     actions: {
@@ -95,8 +104,6 @@ const getState = ({ getStore, getActions, setStore }) => {
       },
       
 
-      
-
       buttonSubmit: async () => {
         const store = getStore();
         const { dataUser, creationState } = store; // Obtener los datos del usuario del estado
@@ -145,17 +152,7 @@ const getState = ({ getStore, getActions, setStore }) => {
               body: JSON.stringify(userData),
             }
           );
-          // Si la solicitud es exitosa, limpiar los datos del usuario
-          // setStore({
-          //   ...getStore(),
-          //   dataUser: {
-          //     email: "",
-          //     name: "",
-          //     last_name: "",
-          //     username: "",
-          //     password: "",
-          //   },
-          // });
+
           setStore({
             ...getStore(),
             dataUser: {
@@ -234,6 +231,159 @@ const getState = ({ getStore, getActions, setStore }) => {
           }, 3000);
         } catch (error) {
           throw new Error(`Error login: ${error.message}`);
+        }
+      },
+
+
+      ChangeLoginHelp: (e) => {
+        // Obtener el estado actualizado del almacén
+        const store = getStore();
+
+        // Agregar el detalle de los datos del usuario actualizado
+        setStore({
+          ...store,
+          loginHelpUser: { ...store.loginHelpUser, [e.target.name]: e.target.value },
+        });
+        // console.log(store);
+      },
+
+      LoginHelp: async () => {
+        const store = getStore();
+        const { loginHelpUser } = store; // Obtener los datos del usuario del estado
+        const { email } = loginHelpUser;
+
+        if (email.trim() === "") {
+          console.error("Por favor completa todos los campos.");
+          return; // Detener el envío del formulario si algún campo está vacío
+        }
+
+        try {
+          let response = await fetch(
+            "https://glowing-orbit-9775rxwgrxgjh6pj-3001.app.github.dev/api/tokenLoginHelp",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(loginHelpUser),
+            }
+          );
+
+          let data = await response.json();
+          console.log(data);
+          if(data.access_token){
+            localStorage.setItem("tokenhelp", data.access_token);
+          }
+
+          setStore({ ...store, loginHelpUser_true_o_false: data.login });
+          
+          if(data.error){
+          setStore({ ...store, loginHelpUserError: data.error });}
+          // setStore({ ...store, loginState: [...store.loginState, data] });
+          console.log(store)
+
+          // Ocultar la respuesta después de 2 segundos
+          setTimeout(() => {
+            setStore({ ...getStore(), loginHelpUserError: [] });
+          }, 1500);
+
+        } catch (error) {
+          console.error(error)
+          throw new Error(`Error login: ${error.message}`);
+        }
+      },
+
+      userDataHelp: async () => {
+        try {
+          // Obtenemos el token del almacenamiento local
+          let myToken = localStorage.getItem("tokenhelp");
+          // Construimos la URL para la solicitud
+          let url =
+            "https://glowing-orbit-9775rxwgrxgjh6pj-3001.app.github.dev/api/user";
+          // Realizamos una solicitud a la URL usando fetch, incluyendo el token de autorización en los encabezados
+          let response = await fetch(url, {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${myToken}`
+            },
+          });
+          // Verificamos si la respuesta de la solicitud es exitosa (status code 200-299)
+          if (!response.ok) {
+            // Si la respuesta no es exitosa, lanzamos un error con un mensaje apropiado
+            throw new Error(
+              `No se pudieron recuperar los datos: ${response.statusText}`
+            );
+          }
+          // Convertimos la respuesta a formato JSON para extraer los datos
+          let data = await response.json();
+          // Si categoryDetail y pageUrl no están definidos, actualizamos el estado de la tienda directamente con los datos cargados
+          let store = getStore();
+          setStore({ ...store, recoveredUserData: data });
+          // Imprimimos el estado de la tienda después de cargar los datos (solo para depuración)
+          console.log("Store after data loaded:", store);
+        } catch (error) {
+          console.error(error)
+          // Si ocurre algún error durante el proceso, lo capturamos y lo mostramos en la consola
+          console.error(error.message);
+        }
+      },
+
+
+      ChangePasswordUpdate: (e) => {
+        // Obtener el estado actualizado del almacén
+        const store = getStore();
+
+        // Agregar el detalle de los datos del usuario actualizado
+        setStore({
+          ...store,
+          UserPasswordUpdate: { ...store.UserPasswordUpdate, [e.target.name]: e.target.value },
+        });
+        // console.log(store);
+      },
+
+      userDataHelpChangePassword: async () => {
+        const store = getStore();
+        const { UserPasswordUpdate } = store; // Obtener los datos del usuario del estado
+        const { password } = UserPasswordUpdate;
+        console.log(store)
+
+        if (password.trim() === "") {
+          console.error("Por favor completa todos los campos.");
+          return; // Detener el envío del formulario si algún campo está vacío
+        }
+
+        try {
+          // Obtenemos el token del almacenamiento local
+          let myToken = localStorage.getItem("tokenhelp");
+          // Construimos la URL para la solicitud
+          let url =
+            "https://glowing-orbit-9775rxwgrxgjh6pj-3001.app.github.dev/api/user";
+          // Realizamos una solicitud a la URL usando fetch, incluyendo el token de autorización en los encabezados
+          let response = await fetch(url, {
+            method: "PUT",
+            headers: {
+            Authorization: `Bearer ${myToken}`,
+            "Content-Type": "application/json"},
+            body: JSON.stringify(UserPasswordUpdate),
+          });
+          // Verificamos si la respuesta de la solicitud es exitosa (status code 200-299)
+          if (!response.ok) {
+            // Si la respuesta no es exitosa, lanzamos un error con un mensaje apropiado
+            throw new Error(
+              `No se pudieron recuperar los datos: ${response.statusText}`
+            );
+          }
+          // Convertimos la respuesta a formato JSON para extraer los datos
+          let data = await response.json();
+          // Si categoryDetail y pageUrl no están definidos, actualizamos el estado de la tienda directamente con los datos cargados
+          let store = getStore();
+          setStore({ ...store, UserPasswordUpdateState: data });
+          // Imprimimos el estado de la tienda después de cargar los datos (solo para depuración)
+          console.log("Store after data loaded:", store);
+        } catch (error) {
+          setStore({ ...store, UserPasswordUpdateState: error });
+          // Si ocurre algún error durante el proceso, lo capturamos y lo mostramos en la consola
+          console.error(error);
         }
       },
 

@@ -12,6 +12,7 @@ import { Footer } from "./component/footer";
 
 import Navbar from "./component/Navbar.jsx";
 import Login  from "./component/Login.jsx";
+import LoginHelp  from "./component/LoginHelp.jsx";
 import Singup from "./component/Singup.jsx";
 import People  from "./pages/People.jsx";
 import Character  from "./pages/Character.jsx";
@@ -36,6 +37,7 @@ const Layout = () => {
                     <Routes>
                         <Route element={<Home />} path="/" />
                         <Route element={<Login />} path="/Login" />
+                        <Route element={<LoginHelp />} path="/LoginHelp" />
                         <Route element={<Singup />} path="/Singup" />
                         <Route element={<People />} path="/People" />
                         <Route element={<Character />} path="/Character/:theid" />

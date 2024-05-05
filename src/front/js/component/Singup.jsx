@@ -35,13 +35,13 @@ const Signup = () => {
     if (creationState.length > 0) {
       if (creationState[0].message) {
         return (
-          <div class="alert alert-success" role="alert">
+          <div className="alert alert-success" role="alert">
             <p>{creationState[0].message}</p>
           </div>
         );
       } else {
         return (
-          <div class="alert alert-danger" role="alert">
+          <div className="alert alert-danger" role="alert">
             <p>{creationState[0].error}</p>
           </div>
         );

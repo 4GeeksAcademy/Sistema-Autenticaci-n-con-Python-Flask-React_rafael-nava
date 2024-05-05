@@ -33,7 +33,8 @@ class User(db.Model):  # Definir una clase que hereda de la clase Model de SQLAl
             "security_questions_question1": self.security_questions[0].question,
             "security_questions_answer1": self.security_questions[0].answer,
             "security_questions_question2": self.security_questions[1].question,
-            "security_questions_answer2": self.security_questions[1].answer
+            "security_questions_answer2": self.security_questions[1].answer,
+            "password": self.password
 
         }
     

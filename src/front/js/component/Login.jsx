@@ -39,13 +39,13 @@ const Login = () => {
       if (loginState.length > 0) {
         if (loginState[0].error) {
           return (
-            <div class="alert alert-danger" role="alert">
+            <div className="alert alert-danger" role="alert">
               <p>{loginState[0].error}</p>
             </div>
           );
         } else {
           return (
-            <div class="alert alert-success" role="alert">
+            <div className="alert alert-success" role="alert">
               <p>Correct password</p>
             </div>
           );
@@ -70,7 +70,7 @@ const Login = () => {
               <input type="password" name="password" value={loginUser.password} onChange={actions.handleChangeLogin} required/>
             </label>
             <button type="submit" className={styles.submitButtonLogin}>Iniciar sesión</button>
-            <a href="#">¿Olvidaste la contraseña?</a>
+            <Link to="/LoginHelp">¿Olvidaste la contraseña?</Link>
             <div className="rememberMe">
               <input type="checkbox" />
               <span>Recuérdame</span>
