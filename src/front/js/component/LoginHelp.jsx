@@ -20,7 +20,7 @@ const LoginHelp = () => {
     try {
         await actions.LoginHelp();
         const { loginHelpUser_true_o_false } = store; // Accede a login_true_o_false directamente desde store
-        console.log('Login successful:', loginHelpUser_true_o_false);
+        // console.log('Login successful:', loginHelpUser_true_o_false);
         await actions.userDataHelp();
     } catch (error) {
         console.error('Error:', error);
@@ -52,7 +52,7 @@ const LoginHelp = () => {
                 </form>
             );
           }
-          console.log(securityData)
+          // console.log(securityData)
       };
 
       const renderPassword = (e) => {
@@ -96,7 +96,7 @@ const LoginHelp = () => {
           </form>
           );
         }
-        console.log(securityData)
+        // console.log(securityData)
     };
 
     const HandlChangePassword = async (e) => {
@@ -141,7 +141,7 @@ const LoginHelp = () => {
 
   return (
     <div className={styles.loginform}>
-      <h2>Recuperar contraceña</h2>
+      <h2>Recuperar contraseña</h2>
       <div>
       {renderHelpResponse()}
       </div>
