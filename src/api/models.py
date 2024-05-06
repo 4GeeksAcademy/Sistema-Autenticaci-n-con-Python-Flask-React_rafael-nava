@@ -1,22 +1,20 @@
-from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
-import json
+from flask_sqlalchemy import SQLAlchemy  # Importación del módulo SQLAlchemy para interactuar con la base de datos
+from datetime import datetime  # Importación del módulo datetime para trabajar con fechas y horas
+import json  # Importación del módulo json para trabajar con datos en formato JSON
 
-db = SQLAlchemy()
+db = SQLAlchemy()  # Creación de una instancia de SQLAlchemy para interactuar con la base de datos
 
 # Definir la clase de usuario (tabla de usuarios en la base de datos)
 class User(db.Model):  # Definir una clase que hereda de la clase Model de SQLAlchemy
     # Definir las columnas de la tabla de usuarios
     id = db.Column(db.Integer, primary_key=True)  # Definir una columna de tipo entero como clave primaria
-    #favorito_id = db.Column(db.Integer, db.ForeignKey('favoritos.id'))  # Corrección: db.Column en lugar de db.column
     email = db.Column(db.String(120), unique=True, nullable=False)  # Definir una columna de tipo string con restricciones de unicidad y no nulidad
     password = db.Column(db.String(80), unique=False, nullable=False)  # Definir una columna de tipo string con restricciones de no nulidad
     is_active = db.Column(db.Boolean(), unique=False, nullable=True)  # Definir una columna de tipo booleano con restricciones de no nulidad
     username = db.Column(db.String(80), unique=True, nullable=False)  # Definir una columna de tipo string con restricciones de unicidad y no nulidad
     name = db.Column(db.String(80), unique=False, nullable=False)  # Definir una columna de tipo string con restricciones de no nulidad
     last_name = db.Column(db.String(80), unique=False, nullable=False)  # Definir una columna de tipo string con restricciones de no nulidad
-    security_questions = db.relationship("SecurityQuestion", backref="user", lazy=True)
-
+    security_questions = db.relationship("SecurityQuestion", backref="user", lazy=True)  # Relación uno a muchos con la tabla de preguntas de seguridad
 
     # Método para representar un objeto de usuario como una cadena
     def __repr__(self):  # Definir un método para representación de cadena
@@ -35,24 +33,23 @@ class User(db.Model):  # Definir una clase que hereda de la clase Model de SQLAl
             "security_questions_question2": self.security_questions[1].question,
             "security_questions_answer2": self.security_questions[1].answer,
             "password": self.password
-
         }
     
 
 class SecurityQuestion(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    question = db.Column(db.String(255), nullable=False)
-    answer = db.Column(db.String(255), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    # Definición de las columnas de la tabla de preguntas de seguridad
+    id = db.Column(db.Integer, primary_key=True)  # Definir una columna de tipo entero como clave primaria
+    question = db.Column(db.String(255), nullable=False)  # Definir una columna de tipo string con restricciones de no nulidad
+    answer = db.Column(db.String(255), nullable=False)  # Definir una columna de tipo string con restricciones de no nulidad
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)  # Definir una columna de clave externa
 
-
-    # Método para representar un objeto de usuario como una cadena
+    # Método para representar un objeto de pregunta de seguridad como una cadena
     def __repr__(self):  # Definir un método para representación de cadena
-        return '<SecurityQuestion %r>' % self.id  # Devolver una cadena que representa el objeto usuario
+        return '<SecurityQuestion %r>' % self.id  # Devolver una cadena que representa el objeto pregunta de seguridad
 
-    # Método para serializar un objeto de usuario a un diccionario JSON
-    def serialize(self):  # Definir un método para serializar el objeto usuario
-        return {  # Devolver un diccionario con los atributos del usuario
+    # Método para serializar un objeto de pregunta de seguridad a un diccionario JSON
+    def serialize(self):  # Definir un método para serializar el objeto pregunta de seguridad
+        return {  # Devolver un diccionario con los atributos de la pregunta de seguridad
             "id": self.id,
             "question": self.question,
             "answer": self.answer
@@ -62,9 +59,9 @@ class Character(db.Model):
     # Definición de las columnas de la tabla de personajes
     id = db.Column(db.Integer, primary_key=True)  # Definir una columna de tipo entero como clave primaria
     name = db.Column(db.String(80), nullable=False)  # Definir una columna de tipo string con restricciones de no nulidad
-    eye_color = db.Column(db.String(80), nullable=True)  # Definir una columna de tipo string con restricciones de no nulidad
-    skin_color = db.Column(db.String(80), nullable=True)  # Definir una columna de tipo string con restricciones de no nulidad
-    gender = db.Column(db.String(10), nullable=True)  # Definir una columna de tipo string con restricciones de no nulidad
+    eye_color = db.Column(db.String(80), nullable=True)  # Definir una columna de tipo string (opcional)
+    skin_color = db.Column(db.String(80), nullable=True)  # Definir una columna de tipo string (opcional)
+    gender = db.Column(db.String(10), nullable=True)  # Definir una columna de tipo string (opcional)
     height = db.Column(db.String(10), nullable=True)  # Definir una columna de tipo string (opcional)
     mass = db.Column(db.String(10), nullable=True)  # Definir una columna de tipo string (opcional)
     hair_color = db.Column(db.String(80), nullable=True)  # Definir una columna de tipo string (opcional)

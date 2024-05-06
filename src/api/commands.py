@@ -1,21 +1,20 @@
-
-import click
-from api.models import db, User
+import click  # Importación del módulo click para la creación de comandos de Flask
+from api.models import db, User  # Importación del modelo db y User desde el módulo api.models
 
 """
-In this file, you can add as many commands as you want using the @app.cli.command decorator
-Flask commands are usefull to run cronjobs or tasks outside of the API but sill in integration 
-with youy database, for example: Import the price of bitcoin every night as 12am
+En este archivo, puedes agregar tantos comandos como desees utilizando el decorador @app.cli.command
+Los comandos de Flask son útiles para ejecutar tareas programadas o tareas fuera de la API pero aún en integración
+con tu base de datos, por ejemplo: Importar el precio de bitcoin cada noche a las 12 a.m.
 """
 def setup_commands(app):
     
     """ 
-    This is an example command "insert-test-users" that you can run from the command line
-    by typing: $ flask insert-test-users 5
-    Note: 5 is the number of users to add
+    Este es un comando de ejemplo "insert-test-users" que puedes ejecutar desde la línea de comandos
+    escribiendo: $ flask insert-test-users 5
+    Nota: 5 es el número de usuarios a agregar
     """
-    # @app.cli.command("insert-test-users") # name of our command
-    # @click.argument("count") # argument of out command
+    # @app.cli.command("insert-test-users") # nombre de nuestro comando
+    # @click.argument("count") # argumento de nuestro comando
     # def insert_test_users(count):
     #     print("Creating test users")
     #     for x in range(1, int(count) + 1):
@@ -50,5 +49,3 @@ def setup_commands(app):
             print("User:", user.username, "created.")
 
         print("All test users created")
-
-

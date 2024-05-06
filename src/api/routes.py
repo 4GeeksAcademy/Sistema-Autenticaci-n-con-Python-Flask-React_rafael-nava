@@ -1,22 +1,27 @@
 """
-This module takes care of starting the API Server, Loading the DB and Adding the endpoints
+Este módulo se encarga de iniciar el servidor API, cargar la base de datos y agregar los puntos finales.
 """
-from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Character, SecurityQuestion
-from api.utils import generate_sitemap, APIException
-from flask_cors import CORS
-from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
-from flask_bcrypt import generate_password_hash, check_password_hash
-from datetime import timedelta
 
-api = Blueprint('api', __name__)
+from flask import Flask, request, jsonify, url_for, Blueprint  # Importación de Flask y funciones relacionadas
+from api.models import db, User, Character, SecurityQuestion  # Importación de los modelos de la base de datos
+from api.utils import generate_sitemap, APIException  # Importación de funciones de utilidad y excepciones personalizadas
+from flask_cors import CORS  # Importación de CORS para permitir solicitudes desde otros dominios
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity  # Importación de JWT para autenticación y autorización basada en tokens
+from flask_bcrypt import generate_password_hash, check_password_hash  # Importación de bcrypt para encriptación de contraseñas
+from datetime import timedelta  # Importación de timedelta para manejar intervalos de tiempo
+
+api = Blueprint('api', __name__)  # Creación de un Blueprint para agrupar las rutas relacionadas con la API
+# Un Blueprint es una forma de organizar y estructurar las rutas de una aplicación Flask en grupos lógicos y modularizados. 
+# Es una característica que permite dividir la aplicación en componentes más pequeños y reutilizables, 
+# lo que facilita la gestión y mantenimiento del código.
 
 # Allow CORS requests to this API
-CORS(api)
+CORS(api)  # Habilitar CORS para permitir solicitudes cruzadas desde el frontend hacia la API
 
 #-------ENCRIPTACION JWT------
 #la inicialización de JWTManager está en la carpeta app.py despues de la declaración del servidor Flask
-jwt = JWTManager()
+jwt = JWTManager()  # Inicialización del JWTManager para manejar la generación y verificación de tokens JWT
+
 
 #-------------------CONSULTAR TODOS LOS USUARIOS--------------------------------------------------------------------------
 @api.route('/users', methods=['GET'])
@@ -64,16 +69,16 @@ def get_user_by_email():
     
 
 #------ actualizar el usuario---------
-@api.route('/user', methods=['PUT'])  # Define un endpoint para actualizar un personaje mediante una solicitud PUT a la ruta '/character/<character_id>'
+@api.route('/user', methods=['PUT'])  # Define un endpoint para actualizar un personaje mediante una solicitud PUT
 @jwt_required() 
-def update_user():  # Define la función que manejará la solicitud, tomando el ID del personaje como argumento
+def update_user():
     try:
 
         data = request.json  # Obtén los datos JSON enviados en la solicitud
         if not data:  # Verifica si no se proporcionaron datos JSON
             return jsonify({'error': 'No data provided'}), 400  # Devuelve un error con código de estado 400 si no se proporcionaron datos
         
-        current_user_id = get_jwt_identity() # Obtiene la id del usuario del token  # Busca el personaje en la base de datos utilizando su ID
+        current_user_id = get_jwt_identity() # Obtiene la id del usuario del token  # Busca el usuaerio en la base de datos utilizando su ID
         user = User.query.get(current_user_id) # Buscar al usuario por su ID
 
         if not user:  # Verifica si el user no fue encontrado en la base de datos

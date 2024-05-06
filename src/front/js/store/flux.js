@@ -239,6 +239,44 @@ const getState = ({ getStore, getActions, setStore }) => {
             throw new Error(`Error login: ${error.message}`); // Se maneja cualquier error que ocurra durante el proceso de inicio de sesión
         }
       },
+
+      loadUserData: async () => { // Se define una función llamada userDataHelp que se ejecutará para obtener datos de usuario con ayuda del token
+        try {
+            // Obtenemos el token del almacenamiento local
+            let myToken = localStorage.getItem("token");
+    
+            // Construimos la URL para la solicitud
+            let url = "https://glowing-orbit-9775rxwgrxgjh6pj-3001.app.github.dev/api/user";
+    
+            // Realizamos una solicitud a la URL usando fetch, incluyendo el token de autorización en los encabezados
+            let response = await fetch(url, {
+                method: "GET", // Método de la solicitud
+                headers: {
+                    Authorization: `Bearer ${myToken}`
+                    // Se incluye el token de autorización en los encabezados concatenamos con el nombre del tipo de token "BearerToken"
+                },
+            });
+    
+            // Verificamos si la respuesta de la solicitud es exitosa (status code 200-299)
+            if (!response.ok) {
+                // Si la respuesta no es exitosa, lanzamos un error con un mensaje apropiado
+                throw new Error(`No se pudieron recuperar los datos: ${response.statusText}`);
+            }
+    
+            // Convertimos la respuesta a formato JSON para extraer los datos
+            let data = await response.json();
+            // console.log(data)
+            // Si categoryDetail y pageUrl no están definidos, actualizamos el estado de la tienda directamente con los datos cargados
+            let store = getStore(); // Se obtiene el estado actual del almacén
+            setStore({ ...store, recoveredUserData: data }); // Se actualiza el estado con los datos de usuario recuperados
+    
+            // Imprimimos el estado de la tienda después de cargar los datos (solo para depuración)
+            // console.log("Store after data loaded:", store);
+        } catch (error) {
+            console.error(error); // Se imprime cualquier error que ocurra durante el proceso
+            // Si ocurre algún error durante el proceso, lo capturamos y lo mostramos en la consola
+        }
+      },
     
       ChangeLoginHelp: (e) => { // Se define una función llamada ChangeLoginHelp que se ejecutará cuando haya un cambio en un input relacionado con la ayuda de inicio de sesión
         // Obtener el estado actualizado del almacén
@@ -510,7 +548,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     last_name: "",
                     username: "",
                     password: "",
-                },
+                }, recoveredUserData:[]
             });
             // console.log(store); // Se imprime el estado actualizado en la consola (para propósitos de depuración)
         }

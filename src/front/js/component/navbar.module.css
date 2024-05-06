@@ -41,3 +41,33 @@
   .logoutButton:hover {
     background-color: #f50a15;
   }
+
+  .ProfileButton {
+    background-color: #808080;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 17px 5px 17px;
+    cursor: pointer;
+    margin-left: 5px;
+  }
+  
+  .ProfileButton:hover {
+    background-color: #808080;
+  }
+
+  .nav-link {
+    display: block;
+    padding: .5rem 1rem;
+    color: rgba(0, 0, 0, .25);
+    text-decoration: none;
+    transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out;
+}
+
+#offcanvasNavbarDropdown{
+  display: block;
+  padding: .5rem 1rem;
+  color: rgba(0, 0, 0, 0.74);
+  text-decoration: none;
+  transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out;
+}
