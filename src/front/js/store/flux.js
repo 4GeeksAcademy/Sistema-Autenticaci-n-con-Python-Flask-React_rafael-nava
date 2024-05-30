@@ -140,7 +140,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                 email, name, last_name, username, password, security_questions
             };
             let response = await fetch( // Se envía una solicitud POST al servidor con los datos del usuario
-                "https://glowing-orbit-9775rxwgrxgjh6pj-3001.app.github.dev/api/users", // URL del servidor
+            `${process.env.BACKEND_URL}/api/users`, // URL del servidor
                 {
                     method: "POST", // Método de la solicitud
                     headers: {
@@ -211,7 +211,7 @@ const getState = ({ getStore, getActions, setStore }) => {
     
         try {
             let response = await fetch( // Se envía una solicitud POST al servidor para iniciar sesión
-                "https://glowing-orbit-9775rxwgrxgjh6pj-3001.app.github.dev/api/token", // URL del servidor
+            `${process.env.BACKEND_URL}/api/token`, // URL del servidor
                 {
                     method: "POST", // Método de la solicitud
                     headers: {
@@ -246,7 +246,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             let myToken = localStorage.getItem("token");
     
             // Construimos la URL para la solicitud
-            let url = "https://glowing-orbit-9775rxwgrxgjh6pj-3001.app.github.dev/api/user";
+            let url = `${process.env.BACKEND_URL}/api/user`;
     
             // Realizamos una solicitud a la URL usando fetch, incluyendo el token de autorización en los encabezados
             let response = await fetch(url, {
@@ -308,7 +308,7 @@ const getState = ({ getStore, getActions, setStore }) => {
     
         try {
             let response = await fetch( // Se envía una solicitud POST al servidor para solicitar ayuda para iniciar sesión
-                "https://glowing-orbit-9775rxwgrxgjh6pj-3001.app.github.dev/api/tokenLoginHelp", // URL del servidor
+            `${process.env.BACKEND_URL}/api/tokenLoginHelp`, // URL del servidor
                 {
                     method: "POST", // Método de la solicitud
                     headers: {
@@ -349,7 +349,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             let myToken = localStorage.getItem("tokenhelp");
     
             // Construimos la URL para la solicitud
-            let url = "https://glowing-orbit-9775rxwgrxgjh6pj-3001.app.github.dev/api/user";
+            let url = `${process.env.BACKEND_URL}/api/user`;
     
             // Realizamos una solicitud a la URL usando fetch, incluyendo el token de autorización en los encabezados
             let response = await fetch(url, {
@@ -416,7 +416,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             let myToken = localStorage.getItem("tokenhelp");
     
             // Construimos la URL para la solicitud
-            let url = "https://glowing-orbit-9775rxwgrxgjh6pj-3001.app.github.dev/api/user";
+            let url = `${process.env.BACKEND_URL}/api/user`;
     
             // Realizamos una solicitud a la URL usando fetch, incluyendo el token de autorización en los encabezados
             let response = await fetch(url, {
@@ -470,7 +470,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             let myToken = localStorage.getItem("token");
     
             // Construimos la URL para la solicitud
-            let url = "https://glowing-orbit-9775rxwgrxgjh6pj-3001.app.github.dev/api/people";
+            let url = `${process.env.BACKEND_URL}/api/people`;
     
             // Realizamos una solicitud a la URL usando fetch, incluyendo el token de autorización en los encabezados
             let response = await fetch(url, {

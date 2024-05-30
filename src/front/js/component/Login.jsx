@@ -57,7 +57,9 @@ const Login = () => { // Definición del componente Login
             <form onSubmit={callHandleLogin}> {/* Formulario para enviar la solicitud de inicio de sesión */}
                 <label>
                     Email: {/* Campo de entrada para el correo electrónico */}
-                    <input type="email" name="email" value={loginUser.email.trim()} onChange={actions.handleChangeLogin} required />
+                    <input type="email" name="email" value={loginUser.email
+                        
+                    } onChange={actions.handleChangeLogin} required />
                 </label>
                 <label>
                     Contraseña: {/* Campo de entrada para la contraseña */}
